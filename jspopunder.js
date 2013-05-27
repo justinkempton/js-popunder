@@ -1,24 +1,24 @@
 function jsPopunder(sUrl, sConfig) {
 
-    var _parent = (top != self && typeof(top.document.location.toString())==='string') ? top : self;
+    var _parent  = (top != self && typeof(top.document.location.toString()) === 'string') ? top : self;
     var popunder = null;
 
-    sConfig = (sConfig || {});
+    sConfig      = (sConfig || {});
 
-    var sName   = (sConfig.name   || Math.floor((Math.random()*1000)+1));
-    var sWidth  = (sConfig.width  || window.innerWidth);
-    var sHeight = (sConfig.height || window.innerHeight);
+    var sName    = (sConfig.name   || Math.floor((Math.random() * 1000) + 1));
+    var sWidth   = (sConfig.width  || window.outerWidth  || window.innerWidth);
+    var sHeight  = (sConfig.height || (window.outerHeight-100) || window.innerHeight);
 
-    var sPosX = (typeof(sConfig.left)!= 'undefined') ? sConfig.left.toString() : window.screenX;
-    var sPosY = (typeof(sConfig.top) != 'undefined') ? sConfig.top.toString()  : window.screenY;
+    var sPosX    = (typeof(sConfig.left) != 'undefined') ? sConfig.left.toString() : window.screenX;
+    var sPosY    = (typeof(sConfig.top)  != 'undefined') ? sConfig.top.toString()  : window.screenY;
 
     /* capping */
-    var sWait = (sConfig.wait || 3600); sWait = (sWait*1000);
-    var sCap  = (sConfig.cap  || 2);
+    var sWait    = (sConfig.wait || 3600); sWait = (sWait * 1000);
+    var sCap     = (sConfig.cap  || 2);
 
     /* cookie stuff */
     var popsToday = 0;
-    var cookie = (sConfig.cookie || '__.popunder');
+    var cookie    = (sConfig.cookie || '__.popunder');
 
     var browser = function() {
         var n = navigator.userAgent.toLowerCase();
@@ -38,27 +38,32 @@ function jsPopunder(sUrl, sConfig) {
 
     function isCapped() {
         try {
-            popsToday = Math.floor(document.cookie.split(cookie+'Cap=')[1].split(';')[0]);
-        } catch(err){}
-        return (sCap<=popsToday || document.cookie.indexOf(cookie+'=') !== -1);
+            popsToday = Math.floor(document.cookie.split(cookie + 'Cap=')[1].split(';')[0]);
+        } catch (err) {}
+        return (sCap <= popsToday || document.cookie.indexOf(cookie + '=') !== -1);
     }
 
 
     function doPopunder(sUrl, sName, sWidth, sHeight, sPosX, sPosY) {
         if (isCapped()) return;
 
-        var sOptions = 'toolbar=no,scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width='+sWidth.toString()+',height='+sHeight.toString()+',screenX='+sPosX+',screenY='+sPosY;
+        var sOptions = 'toolbar=no,scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width=' + sWidth.toString() + ',height=' + sHeight.toString() + ',screenX=' + sPosX + ',screenY=' + sPosY;
 
         document.onclick = function() {
             if (isCapped()) return;
+            
+            // ---
+            // chrome27 fix
+            window.open("javascript:window.focus();", "_self", "");
+            // ---
+
             popunder = _parent.window.open(sUrl, sName, sOptions);
             if (popunder) {
                 // cookie
                 var now = new Date();
-                document.cookie = cookie+'=1;expires='+ new Date(now.setTime(now.getTime()+sWait)).toGMTString() +';path=/';
+                document.cookie = cookie + '=1;expires=' + new Date(now.setTime(now.getTime() + sWait)).toGMTString() + ';path=/';
                 now = new Date();
-                document.cookie = cookie+'Cap='+(popsToday+1)+';expires='+ new Date(now.setTime(now.getTime()+(84600*1000))).toGMTString() +';path=/';
-
+                document.cookie = cookie + 'Cap=' + (popsToday + 1) + ';expires=' + new Date(now.setTime(now.getTime() + (84600 * 1000))).toGMTString() + ';path=/';
                 pop2under();
             }
         };
@@ -84,7 +89,7 @@ function jsPopunder(sUrl, sConfig) {
     }
 
     function openCloseTab() {
-        var ghost    = document.createElement("a");
+        var ghost = document.createElement("a");
         ghost.href   = "about:blank";
         ghost.target = "PopHelper";
         document.getElementsByTagName("body")[0].appendChild(ghost);
@@ -95,7 +100,7 @@ function jsPopunder(sUrl, sConfig) {
         ghost.dispatchEvent(clk);
 
         // open a new tab for the link to target
-        window.open("about:blank", "PopHelper").close();
+        window.open(ghost.href, ghost.target).close();
     }
 
 
