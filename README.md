@@ -27,10 +27,14 @@ Available Parameters
 
 Compatibility
 -------
-- Mozilla Firefox 3-17
 - Google Chrome 10-27
+- Mozilla Firefox 3-21
 - Microsoft Internet Explorer 6-10
-- Apple Safari 5
+- Apple Safari 6
+
+Known Issues
+-------
+- Safari also opens an empty tab
 
 Examples
 -------
