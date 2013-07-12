@@ -2,7 +2,6 @@
 
 **js-popunder** is a pure javascript function for creating pop-under windows
 
-UPDATE (May 27, 2013): Now supports Chrome 27!
 UPDATE (July 12, 2013): Now supports Chrome 28!
 
 Usage
