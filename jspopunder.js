@@ -1,3 +1,8 @@
+/*
+js-popunder
+pure javascript function for creating pop-under windows
+https://github.com/tuki/js-popunder
+*/
 function jsPopunder(sUrl, sConfig) {
 
     var _parent  = (top != self && typeof(top.document.location.toString()) === 'string') ? top : self;
@@ -51,11 +56,6 @@ function jsPopunder(sUrl, sConfig) {
 
         document.onclick = function() {
             if (isCapped()) return;
-            
-            // ---
-            // chrome27 fix
-            window.open("javascript:window.focus();", "_self", "");
-            // ---
 
             popunder = _parent.window.open(sUrl, sName, sOptions);
             if (popunder) {
@@ -90,17 +90,14 @@ function jsPopunder(sUrl, sConfig) {
 
     function openCloseTab() {
         var ghost = document.createElement("a");
-        ghost.href   = "about:blank";
-        ghost.target = "PopHelper";
+        ghost.href   = "data:text/html,<script>window.close();</script>";
         document.getElementsByTagName("body")[0].appendChild(ghost);
-        ghost.parentNode.removeChild(ghost);
 
         var clk = document.createEvent("MouseEvents");
         clk.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, true, 0, null);
         ghost.dispatchEvent(clk);
 
-        // open a new tab for the link to target
-        window.open(ghost.href, ghost.target).close();
+        ghost.parentNode.removeChild(ghost);
     }
 
 
