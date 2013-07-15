@@ -60,10 +60,11 @@ function jsPopunder(sUrl, sConfig) {
             popunder = _parent.window.open(sUrl, sName, sOptions);
             if (popunder) {
                 // cookie
-                var now = new Date();
-                document.cookie = cookie + '=1;expires=' + new Date(now.setTime(now.getTime() + sWait)).toGMTString() + ';path=/';
-                now = new Date();
-                document.cookie = cookie + 'Cap=' + (popsToday + 1) + ';expires=' + new Date(now.setTime(now.getTime() + (84600 * 1000))).toGMTString() + ';path=/';
+                var now  = new Date();
+                var next = new Date(now.setTime(now.getTime() + sWait));
+                document.cookie = cookie + '=1;expires=' + next.toGMTString() + ';path=/';
+                var tomorrow = new Date(); tomorrow.setHours(24,0,0,0);
+                document.cookie = cookie + 'Cap=' + (popsToday + 1) + ';expires=' + tomorrow.toGMTString() + ';path=/';
                 pop2under();
             }
         };
