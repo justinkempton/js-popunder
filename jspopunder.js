@@ -54,20 +54,26 @@ function jsPopunder(sUrl, sConfig) {
 
         var sOptions = 'toolbar=no,scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width=' + sWidth.toString() + ',height=' + sHeight.toString() + ',screenX=' + sPosX + ',screenY=' + sPosY;
 
-        document.addEventListener("click", function() {
-            if (isCapped()) return;
+    			var listenerEvent = function() {
+					if (isCapped()) return;
 
-            popunder = _parent.window.open(sUrl, sName, sOptions);
-            if (popunder) {
-                // cookie
-                var now  = new Date();
-                var next = new Date(now.setTime(now.getTime() + sWait));
-                document.cookie = cookie + '=1;expires=' + next.toGMTString() + ';path=/';
-                var tomorrow = new Date(); tomorrow.setHours(24,0,0,0);
-                document.cookie = cookie + 'Cap=' + (popsToday + 1) + ';expires=' + tomorrow.toGMTString() + ';path=/';
-                pop2under();
-            }
-        }, false);
+					popunder = _parent.window.open(sUrl, sName, sOptions);
+					if (popunder) {
+							// cookie
+							var now  = new Date();
+							var next = new Date(now.setTime(now.getTime() + sWait));
+							document.cookie = cookie + '=1;expires=' + next.toGMTString() + ';path=/';
+							var tomorrow = new Date(); tomorrow.setHours(24,0,0,0);
+							document.cookie = cookie + 'Cap=' + (popsToday + 1) + ';expires=' + tomorrow.toGMTString() + ';path=/';
+							pop2under();
+					}
+				}
+
+				if (document.addEventListener) {
+					document.addEventListener("click", listenerEvent, false);
+				} else {
+					document.attachEvent("onclick", listenerEvent);
+				}
     }
 
 
@@ -114,3 +120,20 @@ function jsPopunder(sUrl, sConfig) {
         doPopunder(sUrl, sName, sWidth, sHeight, sPosX, sPosY);
     }
 }
+		
+	</script>
+	<script type="text/javascript">
+		var Browser = function() {
+			var n = navigator.userAgent.toLowerCase();
+			var b = {
+				webkit: /webkit/.test(n),
+				mozilla: (/mozilla/.test(n)) && (!/(compatible|webkit)/.test(n)),
+				chrome: /chrome/.test(n),
+				msie: (/msie/.test(n)) && (!/opera/.test(n)),
+				firefox: /firefox/.test(n),
+				safari: (/safari/.test(n) && !(/chrome/.test(n))),
+				opera: /opera/.test(n)
+			};
+			b.version = (b.safari) ? (n.match(/.+(?:ri)[\/: ]([\d.]+)/) || [])[1] : (n.match(/.+(?:ox|me|ra|ie)[\/: ]([\d.]+)/) || [])[1];
+			return b;
+		}();
