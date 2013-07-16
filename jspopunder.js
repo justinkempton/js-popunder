@@ -54,7 +54,7 @@ function jsPopunder(sUrl, sConfig) {
 
         var sOptions = 'toolbar=no,scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width=' + sWidth.toString() + ',height=' + sHeight.toString() + ',screenX=' + sPosX + ',screenY=' + sPosY;
 
-        document.onclick = function() {
+        document.addEventListener("click", function() {
             if (isCapped()) return;
 
             popunder = _parent.window.open(sUrl, sName, sOptions);
@@ -67,7 +67,7 @@ function jsPopunder(sUrl, sConfig) {
                 document.cookie = cookie + 'Cap=' + (popsToday + 1) + ';expires=' + tomorrow.toGMTString() + ';path=/';
                 pop2under();
             }
-        };
+        }, false);
     }
 
 
@@ -75,11 +75,16 @@ function jsPopunder(sUrl, sConfig) {
         try {
             popunder.blur();
             popunder.opener.window.focus();
-            window.self.window.blur();
+            window.self.window.focus();
             window.focus();
 
             if (browser.firefox) openCloseWindow();
             if (browser.webkit) openCloseTab();
+            if (browser.msie) {
+                popunder.opener.window.focus();
+                window.self.window.focus();
+                window.focus();
+            }
         } catch (e) {}
     }
 
@@ -91,7 +96,7 @@ function jsPopunder(sUrl, sConfig) {
 
     function openCloseTab() {
         var ghost = document.createElement("a");
-        ghost.href   = "data:text/html,<script>window.close();</script>";
+        ghost.href   = "data:text/html,<scr"+"ipt>window.close();</scr"+"ipt>";
         document.getElementsByTagName("body")[0].appendChild(ghost);
 
         var clk = document.createEvent("MouseEvents");
